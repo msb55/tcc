@@ -1,0 +1,12 @@
+,ability
+BaselineOnly,0.4974338
+CoClustering,0.50153595
+KNNBasic_ItemBased,0.516163
+KNNBasic_UserBased,0.48530942
+KNNWithMeans_ItemBased,0.5350885
+KNNWithMeans_UserBased,0.460629
+NMF,0.5162023
+NormalPredictor,0.46050748
+SVD,0.5121654
+SlopeOne,0.5156854
+stddev,0.02468339
