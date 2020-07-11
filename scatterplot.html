@@ -37,10 +37,11 @@
 		<!-- <script type="text/javascript" src="js/my-vis.js"></script> -->
 		<script type="text/javascript">
 
-			d3.csv('./parameters.csv', function loadCallback(error, data) {
+			d3.csv('./Difficulty x Response/KNNWithMeans_UserBased.csv', function loadCallback(error, data) {
+				console.log(data);
 				data.forEach(function(d) { // convert strings to numbers
+					d.response = +d.response;
 					d.difficulty = +d.difficulty;
-					d.discrimination = +d.discrimination;
 				});
 				makeVis(data);
 			});
@@ -62,13 +63,13 @@
 			  var colorScale = d3.scale.category10();
 
 			  var xScale = d3.scale.linear()
-				  .domain([ d3.min(data, function(d) { return d.discrimination; }) - 0.1,
-							d3.max(data, function(d) { return d.discrimination; }) + 0.1 ])
+				  .domain([ d3.min(data, function(d) { return d.difficulty; }) - 0.1,
+							d3.max(data, function(d) { return d.difficulty; }) + 0.1 ])
 				  .range([0, width]);
 
 			  var yScale = d3.scale.linear()
-				  .domain([ d3.min(data, function(d) { return d.difficulty; }) - 0.1,
-							d3.max(data, function(d) { return d.difficulty; }) + 0.1 ])
+				  .domain([ d3.min(data, function(d) { return d.response; }) - 0.1,
+							d3.max(data, function(d) { return d.response; }) + 0.1 ])
 				  .range([height, 0]); // flip order because y-axis origin is upper LEFT
 
 			  // Define our axes
@@ -79,6 +80,15 @@
 			  var yAxis = d3.svg.axis()
 				  .scale(yScale)
 				  .orient('left');
+				
+			canvas.append("g")
+				// .attr("transform", "translate(" + width/2 + "," + height + ")") // move axis to the bottom of the canvas
+				.append("text")
+				.attr("class", "label")
+				.attr("x", width/2) // x-offset from the xAxis, move label all the way to the right
+				// .attr("y", -6)    // y-offset from the xAxis, moves text UPWARD!
+				.style("text-anchor", "end") // right-justify text
+				.text("KNNWithMeans_UserBased");
 
 			  // Add x-axis to the canvas
 			  canvas.append("g")
@@ -90,7 +100,7 @@
 				  .attr("x", width) // x-offset from the xAxis, move label all the way to the right
 				  .attr("y", -6)    // y-offset from the xAxis, moves text UPWARD!
 				  .style("text-anchor", "end") // right-justify text
-				  .text("discrimination");
+				  .text("Difficulty");
 
 			  // Add y-axis to the canvas
 			  canvas.append("g")
@@ -101,7 +111,7 @@
 				  .attr("transform", "rotate(-90)") // although axis is rotated, text is not
 				  .attr("y", 15) // y-offset from yAxis, moves text to the RIGHT because it's rotated, and positive y is DOWN
 				  .style("text-anchor", "end")
-				  .text("difficulty");
+				  .text("Average response");
 
 			  // Add the tooltip container to the vis container
 			  // it's invisible and its position/contents are defined during mouseover
@@ -113,8 +123,8 @@
 			  var tipMouseover = function(d) {
 				  var color = colorScale(d.user);
 				  var html  = "<b> User ID: </b>" + d.user + "<br/>" +
-							  "<b> Discrimination: </b>" + d.discrimination + "<br/>" +
-							  "<b> Difficulty: </b>" + d.difficulty;
+							  "<b> difficulty: </b>" + d.difficulty + "<br/>" +
+							  "<b> response: </b>" + d.response;
 
 				  tooltip.html(html)
 					  .style("left", (d3.event.pageX + 15) + "px")
@@ -137,8 +147,8 @@
 				  .enter().append("circle")
 				  .attr("class", "dot")
 				  .attr("r", 5.5) // radius size, could map to another data dimension
-				  .attr("cx", function(d) { return xScale( d.discrimination ); })     // x position
-				  .attr("cy", function(d) { return yScale( d.difficulty ); })  // y position
+				  .attr("cx", function(d) { return xScale( d.difficulty ); })     // x position
+				  .attr("cy", function(d) { return yScale( d.response ); })  // y position
 				  .style("fill", function(d) { 
 				  	if (["232","291","153","48","156"].includes(d.user)) { 
 				  		return 'red';
